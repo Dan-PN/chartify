@@ -24,7 +24,7 @@ from chartify import _core
 
 import chartify
 
-_OUTPUT_FORMAT = 'png'
+_OUTPUT_FORMAT = 'html'  # png does not generate
 
 
 def _clean_source(source):
@@ -61,7 +61,7 @@ def plot_line():
     price_by_date = (
         data.groupby('date')['total_price'].sum()
         .reset_index()  # Move 'date' from index to column
-        )
+    )
     print(price_by_date.head())
     """Print break"""
     _line_example_1(price_by_date)
@@ -90,7 +90,7 @@ def _line_example_2_data(data):
     price_by_date_and_country = (
         data.groupby(['date', 'fruit'])['total_price'].sum()
         .reset_index()  # Move 'date' and 'country' from index to column
-        )
+    )
     print(price_by_date_and_country.head())
     """Print break"""
     return price_by_date_and_country
@@ -122,6 +122,7 @@ def chart_blank():
     # Blank charts tell you how to fill in the labels
     ch = chartify.Chart()
     ch.show(_OUTPUT_FORMAT)
+
 
 @_print_source
 def plot_scatter():
@@ -224,6 +225,7 @@ def _scatter_categorical_example(high_low):
         marker='square',
     )
     ch.show(_OUTPUT_FORMAT)
+
 
 plot_scatter_categorical.__doc__ = _core.plot.PlotMixedTypeXY.scatter.__doc__
 
@@ -745,8 +747,8 @@ def _bar_stacked_example_4(quantity_by_fruit_and_country, country_order):
          # Set the text color otherwise it will take
          # The next color in the color palette.
          text_color='white'
-         )
-     .show(_OUTPUT_FORMAT))
+    )
+        .show(_OUTPUT_FORMAT))
 
 
 plot_bar_stacked.__doc__ = _core.plot.PlotMixedTypeXY.bar_stacked.__doc__
@@ -968,7 +970,8 @@ def plot_radar_area():
 
     # Generate example data
     data = chartify.examples.example_data()
-    total_by_fruit_and_country = data.groupby(['fruit', 'country'])['quantity'].sum().reset_index()
+    total_by_fruit_and_country = data.groupby(['fruit', 'country'])[
+        'quantity'].sum().reset_index()
     print(total_by_fruit_and_country.head())
     """Print break"""
     _radar_area_example_1(total_by_fruit_and_country)
@@ -1003,8 +1006,10 @@ def plot_radar_radius():
     total_by_country = data.groupby(['country'])['quantity'].sum().reset_index()
     countries = total_by_country.country.unique()
     grid_values = product(range(0, 1200, 200), countries)
-    grid_df = pd.DataFrame.from_records(grid_values, columns=['quantity', 'country'])
-    quantity_label = grid_df.groupby('quantity')[['quantity']].min().reset_index(drop=True)
+    grid_df = pd.DataFrame.from_records(
+        grid_values, columns=['quantity', 'country'])
+    quantity_label = grid_df.groupby(
+        'quantity')[['quantity']].min().reset_index(drop=True)
 
     ch = chartify.RadarChart(True, layout='slide_50%')
     ch.set_title('Radar Radius Chart')
@@ -1051,7 +1056,7 @@ def chart_second_axis():
     price_by_date = (
         data.groupby('date')['total_price'].sum()
         .reset_index()  # Move 'date' from index to column
-        )
+    )
     price_by_date['triple_total_price'] = price_by_date['total_price'] * 3
     price_by_date = price_by_date.sort_values('date')
     print(price_by_date.head())
@@ -1147,6 +1152,7 @@ def style_color_palette_custom():
     ch.set_title("Custom color palette")
     ch.show(_OUTPUT_FORMAT)
 
+
 def example_data():
     """Data set used in Chartify examples.
     """
@@ -1181,7 +1187,8 @@ def example_data():
 
     example_data['unit_price'] = example_data['fruit'].map(fruit_price_map) * (
         1.0 + np.random.normal(0, .1, size=N_SAMPLES))
-    example_data['quantity'] = example_data['unit_price'].apply(lambda x: max(0, np.random.poisson(max(3. - x*1.25, 0)) + 1))
+    example_data['quantity'] = example_data['unit_price'].apply(
+        lambda x: max(0, np.random.poisson(max(3. - x*1.25, 0)) + 1))
     example_data['total_price'] = (example_data['unit_price']
                                    * example_data['quantity'])
     return example_data
@@ -1423,8 +1430,8 @@ def axes_axis_type():
      .set_subtitle(
         "Set axis type for auto handling of categorical, datetime, linear, or log values."
     )
-     .set_title("Axis Type")
-     .show(_OUTPUT_FORMAT))
+        .set_title("Axis Type")
+        .show(_OUTPUT_FORMAT))
 
 
 # axis_type.__doc__ = _core.axes.Axes.set_xaxis_type.__doc__
@@ -1576,6 +1583,7 @@ def chart_show():
     ch.set_subtitle('Will display on github.')
     ch.show('png')  # Show with PNG
 
+
 chart_show.__doc__ = _core.chart.Chart.show.__doc__
 
 
@@ -1591,5 +1599,6 @@ def chart_save():
     ch.set_title(
         'ch.show(): Save chart to html, png, or svg.')
     ch.save('saved_chart_example.html', format='html')  # Save to html
+
 
 chart_save.__doc__ = _core.chart.Chart.save.__doc__
